@@ -37,10 +37,8 @@ export default function LoginForm() {
         return;
       }
 
-      if (response.token && response.role) {
-        // Salvamos no Cookie. O 'path=/' diz que o token vale para o site inteiro.
-        document.cookie = `token=${response.token}; path=/; max-age=7200`; // 7200s = 2 horas
-        document.cookie = `role=${response.role}; path=/; max-age=7200`;
+      if (response.token) {
+        localStorage.setItem("token", response.token);
         alert(response.message);
         route.push("/dashboard");
       }
