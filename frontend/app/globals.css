@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --botao: #E3C994;
+  --cor-primaria-dourado: #E3C994;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-dourado: var(--cor-primaria-dourado);
+  --color-cinza-dark: #1c1c1c;
+  --font-titulo-banner: var(--font-open-sans);
+  --font-titulo-footer: var(--font-dancing-script);
+  --font-titulo-logo: var(--font-satisfy);
+  --color-primario: #1C120D;
+  --color-footer: #130808;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  @apply underline-offset-4;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Remove o fundo branco/azul do Autocomplete dos navegadores e mantém a cor e o texto do tema */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #121212 inset !important; /* Mesma cor do seu bg-[#121212] */
+    -webkit-text-fill-color: white !important; /* Mantém o texto branco */
+    transition: background-color 5000s ease-in-out 0s; /* Evita que o fundo pisque */
+    caret-color: white; /* Cor do cursor piscando */
+}
+
+a{
+  @apply hover:underline;
+}
+
+.button {
+  @apply inline-flex items-center justify-center;
+  @apply px-8 py-3;
+  @apply rounded-md;
+  
+  
+  @apply bg-gradient-to-b from-[#E3C994] to-[#D4B06F];
+  
+  @apply text-[#1F1A12] font-bold uppercase tracking-wider;
+  @apply shadow-lg shadow-black/60;
+  
+  
+  @apply transition duration-200 hover:from-[#F0DBAA] hover:to-[#E3C994] hover:shadow-black/70;
+}
+
+.vintage-frame {
+  /* 1. Definimos a borda base para que o Tailwind saiba onde aplicar a imagem */
+  @apply border-8 rounded-none;
+
+  /* 2. Definimos a imagem da fonte (o ficheiro na pasta public) */
+  border-image-source: url('/moldura-vintage.png');
+
+  /* 3. Fatiamento (Slice): O segredo da moldura ornamentada!
+     Dizemos ao CSS para 'cortar' a imagem 30 pixels (ou a medida correta da tua imagem)
+     a partir de cada borda para isolar os cantos. 'fill' preenche o interior
+     se a moldura também tiver um fundo.
+     Ajusta este número (30) baseado no tamanho real dos cantos da tua imagem. */
+  border-image-slice: 30 fill;
+
+  /* 4. Largura da Borda (pode ser diferente da border-8 utilitária) */
+  border-image-width: 16px;
+
+  /* 5. Repetição (Repeat): Como preencher as arestas entre os cantos.
+     'round' estica ligeiramente a imagem para que a repetição não corte
+     nenhum detalhe. 'repeat' também é uma opção. */
+  border-image-repeat: round;
+}
