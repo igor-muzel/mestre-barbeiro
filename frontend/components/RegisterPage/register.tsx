@@ -67,7 +67,7 @@ export default function RegisterForm() {
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] flex flex-col">
-      <Navbar />
+      
       
       {/* Container que ocupa o restante da tela para centralizar a caixa de cadastro */}
       <div className="flex-1 flex items-center justify-center p-4">

@@ -1,10 +1,18 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MdMenu } from "react-icons/md";
+import { User } from "lucide-react";
+import {useUsuario} from "@/hooks/useUsuario";
+
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  const nomeUsuario = useUsuario();
+
+  const isDashboard = pathname.startsWith("/dashboard");
 
   return (
     <header className="relative top-0 left-0 w-full shadow-sm z-50 px-6 dark:bg-black bg-white">
@@ -46,12 +54,31 @@ export default function Navbar() {
         <nav className="flex-1 flex justify-end">
           <ul className="flex items-center gap-20 text-lg menu-font">
             <li className="hidden md:block">
-              <Link
-                className="bg-[#2c2a21] px-8 py-3 rounded-sm font-bold text-white hover:brightness-110 transition-all"
-                href="/login"
-              >
-                LOGIN/CADASTRO
-              </Link>
+              {isDashboard ? (
+                // Se for Dashboard, mostramos o Perfil
+                <div className="flex items-center gap-3">
+                  <span className="text-white">
+                    Bem-vindo,{" "}
+                    <span
+                      className="text-[#c5a059] font-bold"
+                      suppressHydrationWarning
+                    >
+                      {nomeUsuario}
+                    </span>
+                  </span>
+                  <div className="w-10 h-10 bg-[#c5a059]/20 border border-[#c5a059]/30 rounded-full flex items-center justify-center text-[#c5a059]">
+                    <User className="w-5 h-5" />
+                  </div>
+                </div>
+              ) : (
+                // Se NÃO for Dashboard, mostramos o botão de Login
+                <Link
+                  className="bg-[#2c2a21] px-8 py-3 rounded-sm font-bold text-white hover:brightness-110 transition-all"
+                  href="/login"
+                >
+                  LOGIN/CADASTRO
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

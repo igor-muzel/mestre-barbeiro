@@ -37,8 +37,9 @@ export default function LoginForm() {
         return;
       }
 
-      if (response.token) {
-        localStorage.setItem("token", response.token);
+      if (response.token && response.role) {
+        document.cookie = `token=${response.token}; path=/; max-age=7200`;
+        document.cookie = `role=${response.role}; path=/; max-age=7200`;
         alert(response.message);
         route.push("/dashboard");
       }
@@ -52,7 +53,7 @@ export default function LoginForm() {
   return (
     
     <main className="min-h-screen bg-[#0d0d0d] flex flex-col">
-      <Navbar />
+      
       
       {/* Container que ocupa o restante da tela para centralizar a caixa de login */}
       <div className="flex-1 flex items-center justify-center p-4">
@@ -101,7 +102,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              disabled={isRequest}
+              
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#c5a059] hover:opacity-80 transition-opacity"
             >
               {showPassword ? (
