@@ -10,5 +10,7 @@ namespace backend.Data
         }
 
         public DbSet<Usuario> Usuarios {get; set;}
+        public DbSet<Servico> Servicos {get;set;}
+        public DbSet<Agendamento> Agendamentos {get;set;}
     }
 }

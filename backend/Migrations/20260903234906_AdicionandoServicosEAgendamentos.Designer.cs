@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260903234906_AdicionandoServicosEAgendamentos")]
+    partial class AdicionandoServicosEAgendamentos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("ServicoId");
 
-                    b.ToTable("Agendamentos");
+                    b.ToTable("Agendamento");
                 });
 
             modelBuilder.Entity("backend.Models.Servico", b =>
@@ -77,7 +80,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("BarbeiroId");
 
-                    b.ToTable("Servicos");
+                    b.ToTable("Servico");
                 });
 
             modelBuilder.Entity("backend.Models.Usuario", b =>

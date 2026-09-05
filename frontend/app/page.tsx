@@ -11,7 +11,7 @@ export default function Home() {
   return (
     
     <main className="flex flex-col flex-1 w-full h-full font-sans bg-white">
-      <Navbar />
+      
       <Hero />
       <Card/>
       <div className="flex flex-col md:flex-row w-full items-stretch">

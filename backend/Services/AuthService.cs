@@ -54,9 +54,9 @@ namespace backend.Services
             {
                 return (false, "Erro ao realizar login: " + ex.Message, null, null);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
         }

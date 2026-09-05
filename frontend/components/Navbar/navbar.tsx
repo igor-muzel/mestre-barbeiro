@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MdMenu } from "react-icons/md";
@@ -10,9 +10,15 @@ import {useUsuario} from "@/hooks/useUsuario";
 export default function Navbar() {
   const pathname = usePathname();
 
-  const nomeUsuario = useUsuario();
+  const { nomeUsuario } = useUsuario();
 
-  const isDashboard = pathname.startsWith("/dashboard");
+  const isPublicRoute = 
+    pathname === "/" || 
+    pathname.startsWith("/login") || 
+    pathname.startsWith("/cadastro");
+
+    const showProfile = !isPublicRoute;
+  
 
   return (
     <header className="relative top-0 left-0 w-full shadow-sm z-50 px-6 dark:bg-black bg-white">
@@ -33,6 +39,15 @@ export default function Navbar() {
             </button>
           </div>
           <ul className="flex items-center gap-25 text-lg menu-font">
+             <li className="hidden md:block">
+              <Link
+                className="data-[active=true]:underline"
+                data-active={pathname === "/servicos"}
+                href="/dashboard"
+              >
+                DASHBOARD
+              </Link>
+            </li>
             <li className="hidden md:block">
               <Link
                 className="data-[active=true]:underline"
@@ -43,7 +58,7 @@ export default function Navbar() {
               </Link>
             </li>
             <li className="hidden md:block">
-              <Link href="/#agende">AGENDE</Link>
+              <Link href="/agende">AGENDE</Link>
             </li>
             <li className="hidden md:block">
               <Link href="/#sobre">SOBRE</Link>
@@ -54,8 +69,8 @@ export default function Navbar() {
         <nav className="flex-1 flex justify-end">
           <ul className="flex items-center gap-20 text-lg menu-font">
             <li className="hidden md:block">
-              {isDashboard ? (
-                // Se for Dashboard, mostramos o Perfil
+              {showProfile ? (
+                // Se estiver nas rotas da (main), mostra o Perfil
                 <div className="flex items-center gap-3">
                   <span className="text-white">
                     Bem-vindo,{" "}
@@ -71,7 +86,7 @@ export default function Navbar() {
                   </div>
                 </div>
               ) : (
-                // Se NÃO for Dashboard, mostramos o botão de Login
+                // Se estiver na Home ("/"), Login ou Cadastro, mostra o botão
                 <Link
                   className="bg-[#2c2a21] px-8 py-3 rounded-sm font-bold text-white hover:brightness-110 transition-all"
                   href="/login"
