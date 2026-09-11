@@ -14,11 +14,37 @@ namespace backend.Controllers
     [Authorize(Roles = "Admin")]
     public class UsuariosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuariosController(AppDbContext context)
+        public UsuariosController(IUsuarioService usuarioService)
         {
-            _context = context;
+            _usuarioService = usuarioService;
+        }
+
+
+        [HttpGet("BuscarUsuario/{id}")]
+        public async Task<IActionResult> BuscarUsuario(int id)
+        {
+            var usuario = await _usuarioService.BuscarUsuarioAsync(id);
+            if (usuario == null)
+            {
+                return NotFound("Usuário não encontrado");
+            }
+            return Ok(usuario);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> ExcluirUsuario(int id)
+        {
+            var usuarioExcluido = await _usuarioService.ExcluirUsuarioAsync(id);
+
+            if(!usuarioExcluido.Sucesso)
+            {
+                return NotFound(new {sucesso = usuarioExcluido.Sucesso ,mensagem = usuarioExcluido.Mensagem });
+            }
+
+            
+            return Ok(new { sucesso = usuarioExcluido.Sucesso, mensagem = usuarioExcluido.Mensagem });
         }
 
         [HttpGet]
@@ -26,27 +52,19 @@ namespace backend.Controllers
         {
             try
             {
-                var usuarios = await _context.Usuarios
-                .Where(u => u.Role == "Comum")
-                .Select(u => new UsuarioClienteDTO
-                {
-                    Name = u.Name,
-                    Email = u.Email,
-                    Telefone = u.Telefone
-                })
-                .ToListAsync();
+                
+                var usuarios = await _usuarioService.ListarUsuariosComunsAsync();
 
-                if (usuarios == null)
+                if (usuarios == null || !usuarios.Any())
                 {
-                    throw new Exception("Nenhum usuário encontrado.");
+                    return NotFound(new { mensagem = "Nenhum usuário encontrado." });
                 }
 
                 return Ok(usuarios);
             }
-            
             catch (Exception ex)
             {
-                throw new Exception("Erro ao buscar usuários: " + ex.Message);
+                return BadRequest(new { mensagem = "Erro ao buscar usuários: " + ex.Message });
             }
         }
 

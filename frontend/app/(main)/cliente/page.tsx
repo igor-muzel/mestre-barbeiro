@@ -1,14 +1,53 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Users, Search, Filter } from "lucide-react";
+import { Users, Search, Filter, Edit, Trash2 } from "lucide-react";
 // Importe de acordo com os nomes que você salvou:
 import { ClienteDTO } from "@/types/client";
 import { clienteService } from "@/services/api/clientService";
 
+import { EditClientModal } from "@/components/Modal/EditClientModal";
+
 export default function PageClient() {
-  const [clientes, setClientes] = useState<ClienteDTO[]>([]); 
-  const [carregando, setCarregando] = useState(true); 
-  const [erro, setErro] = useState<string | null>(null); 
+  const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function handleExcluirCliente(id: number) {
+    try {
+      const confirmacao = window.confirm(
+        "Tem certeza que deseja excluir este cliente?",
+      );
+      console.log("Verificando no page.tsx: " + id);
+      if (!confirmacao) {
+        return;
+      }
+
+      const resposta = await clienteService.excluirCliente(id);
+
+      if (resposta.sucesso) {
+        // Atualiza a lista de clientes removendo o cliente excluído
+        setClientes((clientesAnteriores) =>
+          clientesAnteriores.filter((c) => c.id != id),
+        );
+        alert("Cliente excluído com sucesso!");
+      } else {
+        alert("Falha ao excluir cliente: " + resposta.mensagem);
+      }
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+      alert("Ocorreu um erro ao tentar excluir o cliente.");
+    }
+  }
+  // Estados para controlar o Modal de Edição
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clienteSelecionado, setClienteSelecionado] =
+    useState<ClienteDTO | null>(null);
+
+  // Função para abrir o modal e injetar o cliente clicado
+  const abrirModalEdicao = (cliente: ClienteDTO) => {
+    setClienteSelecionado(cliente);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     async function carregarDados() {
@@ -60,15 +99,16 @@ export default function PageClient() {
         </button>
       </div>
 
-     
       <div className="bg-[#181818] border border-neutral-800 rounded-2xl overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#121212] border-b border-neutral-800 text-gray-400 text-sm uppercase tracking-wider">
               <th className="p-4 font-semibold">Nome</th>
               <th className="p-4 font-semibold">Contato</th>
+              <th className="p-4 font-semibold">E-mail</th>
               <th className="p-4 font-semibold">Total Cortes</th>
-              <th className="p-4 font-semibold text-right">Ações</th>
+              <th className="p-4 font-semibold text-right">Editar</th>
+              <th className="p-4 font-semibold text-right">Excluir</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-800">
@@ -114,17 +154,32 @@ export default function PageClient() {
                       </div>
                       <div>
                         <h4 className="font-bold text-white">{cliente.name}</h4>
-                        <p className="text-xs text-gray-500">{cliente.email}</p>
+                        {/* <p className="text-xs text-gray-500">{cliente.email}</p> */}
                       </div>
                     </div>
                   </td>
                   <td className="p-4 text-gray-300">
                     {cliente.telefone || "Sem telefone"}
                   </td>
+                  <td className="p-4 text-gray-300">{cliente.email}</td>
                   <td className="p-4 text-gray-400">0 Cortes</td>
+
                   <td className="p-4 text-right">
-                    <button className="text-[#c5a059] hover:underline text-sm font-medium">
-                      Ver Detalhes
+                    <button
+                      onClick={() => abrirModalEdicao(cliente)}
+                      className="p-2 text-gray-400 hover:text-white transition-colors"
+                      title="Editar"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button
+                      onClick={() => handleExcluirCliente(cliente.id)}
+                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>
@@ -132,6 +187,13 @@ export default function PageClient() {
           </tbody>
         </table>
       </div>
+
+      {/* Renderiza o Modal de Edição sobrepondo a tela inteira */}
+      <EditClientModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        cliente={clienteSelecionado}
+      />
     </div>
   );
 }

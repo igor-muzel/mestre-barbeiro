@@ -5,3 +5,12 @@ export interface ClienteDTO{
     telefone: string;
     
 }
+
+export interface ExcluirUsuarioRequest{
+    id: number;
+}
+
+export interface ExcluirUsuarioResponse{
+    mensagem: string;
+    sucesso: boolean;
+}

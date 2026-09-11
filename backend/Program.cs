@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Injeção de Dependências
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IServicoService, ServicoService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 // Configuração do CORS
 builder.Services.AddCors(options =>
