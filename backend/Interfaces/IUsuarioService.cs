@@ -13,6 +13,7 @@ namespace backend.Interfaces
         Task<Usuario?> BuscarUsuarioAsync(int id);
         Task<(bool Sucesso, string Mensagem)> ExcluirUsuarioAsync(int id);
         Task<IEnumerable<UsuarioClienteDTO>> ListarUsuariosComunsAsync();
+        Task<ClienteAtualizarDTO?> AtualizarCliente(ClienteAtualizarDTO cliente);
 
     }
 }

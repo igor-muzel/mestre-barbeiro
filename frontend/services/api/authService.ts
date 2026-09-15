@@ -1,5 +1,6 @@
 import { CadastroDados, LoginRequest, LoginResponse } from "@/types/auth";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { getCookie } from "@/utils/cookies";
 
 export async function loginUsuario(
   dados: LoginRequest,
@@ -34,10 +35,19 @@ export async function loginUsuario(
   } catch (err) {
     return {
       sucesso: false,
-      message: "Erro com o servidor: "+err,
-      
+      message: "Erro com o servidor: " + err,
     };
   }
+}
+
+export async function adicionarCliente(dados: CadastroDados) {
+  const token = getCookie("token");
+  if (!token) {
+    throw new Error("Usuário não autenticado.");
+  }
+
+  await cadastrarUsuario(dados);
+
 }
 
 export async function cadastrarUsuario(dados: CadastroDados) {

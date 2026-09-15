@@ -4,13 +4,17 @@ import { Users, Search, Filter, Edit, Trash2 } from "lucide-react";
 // Importe de acordo com os nomes que você salvou:
 import { ClienteDTO } from "@/types/client";
 import { clienteService } from "@/services/api/clientService";
-
+import {CreateClientModal} from "@/components/Modal/CreateClientModal";
 import { EditClientModal } from "@/components/Modal/EditClientModal";
 
 export default function PageClient() {
   const [clientes, setClientes] = useState<ClienteDTO[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+
+  
 
   async function handleExcluirCliente(id: number) {
     try {
@@ -25,7 +29,7 @@ export default function PageClient() {
       const resposta = await clienteService.excluirCliente(id);
 
       if (resposta.sucesso) {
-        // Atualiza a lista de clientes removendo o cliente excluído
+        // aqui vamos atualizar a lista de clientes removendo o cliente excluído
         setClientes((clientesAnteriores) =>
           clientesAnteriores.filter((c) => c.id != id),
         );
@@ -49,8 +53,7 @@ export default function PageClient() {
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    async function carregarDados() {
+  async function carregarDados() {
       try {
         setCarregando(true);
         const dados = await clienteService.buscarClientes();
@@ -63,7 +66,10 @@ export default function PageClient() {
       }
     }
 
-    carregarDados();
+  useEffect(() => {
+    setTimeout(()=>{
+      carregarDados();
+    })
   }, []);
 
   return (
@@ -79,9 +85,27 @@ export default function PageClient() {
             Gerencie todos os clientes da barbearia.
           </p>
         </div>
-        <button className="hidden sm:flex bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#aa7c11] text-black px-6 py-3 rounded-lg font-bold uppercase text-sm shadow-lg hover:brightness-110">
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+         className="cursor-pointer hidden sm:flex bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#aa7c11] text-black px-6 py-3 rounded-lg font-bold uppercase text-sm shadow-lg hover:brightness-110">
           + Novo Cliente
         </button>
+        {
+        /** <EditClientModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        cliente={clienteSelecionado}
+      /> */
+      }
+
+
+      <CreateClientModal
+      isOpen={isCreateModalOpen}
+      onClose={() => setIsCreateModalOpen(false)}
+      onSucess={()=> carregarDados()}
+      />
+
+       
       </header>
 
       {/* 2. Barra de Pesquisa */}

@@ -21,6 +21,32 @@ namespace backend.Controllers
             _usuarioService = usuarioService;
         }
 
+        [HttpPut("AtualizarCliente")]
+        public async Task<IActionResult> AtualizarCliente([FromBody] ClienteAtualizarDTO cliente)
+        {
+            try
+            {
+                if (cliente == null)
+                {
+                    return BadRequest(new {sucesso = false, message = "Os dados do cliente precisam ser preenchidos corretamente"});
+                }
+
+                var clienteAtualizado = await _usuarioService.AtualizarCliente(cliente);
+
+                if (clienteAtualizado == null)
+                {
+                    return NotFound(new {sucesso = false, message = "Cliente não encontrado."});
+
+                }
+
+                return Ok(new {sucesso = true, message = "Cliente "+clienteAtualizado.Nome+" atualizado com sucesso!",dados = clienteAtualizado});
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { sucesso = false, message = "Erro interno no servidor: " + ex.Message });
+            }
+        }
+
 
         [HttpGet("BuscarUsuario/{id}")]
         public async Task<IActionResult> BuscarUsuario(int id)

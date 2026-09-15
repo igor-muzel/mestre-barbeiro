@@ -7,6 +7,7 @@ import type { CadastroDados } from "@/types/auth";
 import { Eye, EyeOff, Lock, Mail, Phone, UserRound } from "lucide-react";
 import Navbar from "../Navbar/navbar";
 
+//aqui cadastra o usuario
 export default function RegisterForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);

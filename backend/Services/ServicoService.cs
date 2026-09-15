@@ -11,14 +11,15 @@ namespace backend.Services
     public class ServicoService : IServicoService
     {
         private readonly AppDbContext _context;
-        private readonly IConfiguration _configuracao;
+       
 
         // Injetando o banco de dados e as configurações
         public ServicoService(AppDbContext context, IConfiguration configuracao)
         {
             _context = context;
-            _configuracao = configuracao;
+            
         }
+
 
 
         public async Task<(bool Sucesso, string Mensagem)> CriarServicoAsync(ServicoCreateDTO servicoCreateDTO)

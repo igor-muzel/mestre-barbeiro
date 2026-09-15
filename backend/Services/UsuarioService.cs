@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using backend.Data;
 using backend.DTOs;
 using backend.Interfaces;
@@ -19,6 +20,10 @@ namespace backend.Services
             _context = context;
 
         }
+
+
+
+
 
         public async Task<Usuario?> BuscarUsuarioAsync(int id)
         {
@@ -44,8 +49,10 @@ namespace backend.Services
         // MUDANÇA 3: Trazendo a lógica do 'GetUsuarios' da Controller para o Cérebro (Serviço)
         public async Task<IEnumerable<UsuarioClienteDTO>> ListarUsuariosComunsAsync()
         {
+            //LINQ
             var usuarios = await _context.Usuarios
                 .Where(u => u.Role == "Comum")
+                .OrderBy(u => u.Name)
                 .Select(u => new UsuarioClienteDTO
                 {
                     Id = u.Id,
@@ -82,7 +89,43 @@ namespace backend.Services
             }
         }
 
+        public async Task<ClienteAtualizarDTO?> AtualizarCliente(ClienteAtualizarDTO cliente)
+        {
+            try
+            {
+                if (cliente == null)
+                {
+                    return null;
+                }
+
+                int clienteId = cliente.Id;
+                var buscaCliente = await BuscarUsuarioAsync(clienteId);
+
+                if (buscaCliente == null)
+                {
+                    return null;
+                }
 
 
+                buscaCliente.Name = cliente.Nome;
+                buscaCliente.Telefone = cliente.Telefone;
+
+                await _context.SaveChangesAsync();
+                return cliente;
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
+            {
+                
+                var mensagemErro = dbEx.InnerException != null ? dbEx.InnerException.Message : dbEx.Message;
+
+                
+                throw new Exception($"Falha ao salvar no banco de dados: {mensagemErro}");
+            }
+            catch (Exception ex)
+            {
+               
+                throw new Exception($"Ocorreu um erro inesperado ao atualizar o cliente: {ex.Message}");
+            }
+        }
     }
 }

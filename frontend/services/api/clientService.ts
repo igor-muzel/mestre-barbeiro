@@ -1,7 +1,11 @@
 import { ClienteDTO } from "@/types/client";
 import { getCookie } from "@/utils/cookies";
-import {ExcluirUsuarioRequest, ExcluirUsuarioResponse} from "@/types/client";
+import { ExcluirUsuarioResponse} from "@/types/client";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+
+
 
 export const clienteService = {
     async buscarClientes(): Promise<ClienteDTO[]> {
@@ -25,6 +29,7 @@ export const clienteService = {
         const clientes = await resposta.json();
         return clientes;
     },
+
 
      excluirCliente: async(id: number)
          :Promise<ExcluirUsuarioResponse> => 
