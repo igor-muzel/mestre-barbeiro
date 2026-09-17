@@ -14,3 +14,4 @@ export interface ExcluirUsuarioResponse{
     mensagem: string;
     sucesso: boolean;
 }
+

@@ -6,15 +6,19 @@ import { ClienteDTO } from "@/types/client";
 import { clienteService } from "@/services/api/clientService";
 import {CreateClientModal} from "@/components/Modal/CreateClientModal";
 import { EditClientModal } from "@/components/Modal/EditClientModal";
+import { Pagination } from "@/components/Pagination/Pagination";
 
 export default function PageClient() {
   const [clientes, setClientes] = useState<ClienteDTO[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-
-  
+  const [termoBusca, setTermoBusca] = useState("");
+  //variavel que guarda o primeiro numero da pagina, no caso a pagina 1
+  //pois a pagina 1 é a primeira pagina da grid de usuario
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  //quantos usuarios vao ser mostrados por vez 
+  const itensPorPagina = 5;
 
   async function handleExcluirCliente(id: number) {
     try {
@@ -72,6 +76,17 @@ export default function PageClient() {
     })
   }, []);
 
+  //todos os clientes carregados na variavel clientesFiltrados
+  const clientesFiltrados = clientes.filter(cliente => 
+    cliente.name.toLowerCase().startsWith(termoBusca.toLowerCase())
+  );
+
+  //1 * 5 = 5(cliente 5 é o ultimo), e se tiver na pagina 2: 2 * 5 = 10(cliente 10 é o ultimo)
+  const indiceUltimoCliente = paginaAtual * itensPorPagina;
+  //pagina 1: 5 (ultimo cliente) - 5 (itens por pagina) = 0; pagina 2: 10 - 5 = 5; pagina 3 : 15 -5 = 10
+  const indicePrimeiroCliente = indiceUltimoCliente - itensPorPagina;
+  const clientesAtuais = clientesFiltrados.slice(indicePrimeiroCliente,indiceUltimoCliente);
+  const totalPaginas = Math.ceil(clientesFiltrados.length / itensPorPagina);
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       {}
@@ -113,6 +128,10 @@ export default function PageClient() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
+            value={termoBusca}
+            onChange={(e)=>{
+              setTermoBusca(e.target.value);
+            }}
             type="text"
             placeholder="Buscar cliente..."
             className="w-full bg-[#121212] border border-neutral-800 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none"
@@ -166,7 +185,7 @@ export default function PageClient() {
             {/* Regra D: Renderização dos Clientes reais! */}
             {!carregando &&
               !erro &&
-              clientes.map((cliente, index) => (
+              clientesAtuais.map((cliente, index) => (
                 <tr
                   key={index}
                   className="hover:bg-[#121212]/50 transition-colors"
@@ -191,25 +210,37 @@ export default function PageClient() {
                   <td className="p-4 text-right">
                     <button
                       onClick={() => abrirModalEdicao(cliente)}
-                      className="p-2 text-gray-400 hover:text-white transition-colors"
+                      className="cursor-pointer p-2 text-gray-400 hover:text-white transition-colors"
                       title="Editar"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                   </td>
-                  <td className="p-4 text-right">
+                  <td className=" p-4 text-right">
                     <button
                       onClick={() => handleExcluirCliente(cliente.id)}
                       className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                       title="Excluir"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="cursor-pointer w-4 h-4" />
                     </button>
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
+        
+        {/* Usando o nosso novo componente reutilizável */}
+        {!carregando && !erro && (
+          <Pagination 
+            paginaAtual={paginaAtual} 
+            totalPaginas={totalPaginas} 
+            totalItens={clientesFiltrados.length} 
+            itensPorPagina={itensPorPagina} 
+            mudarPagina={setPaginaAtual} 
+          />
+        )}
+
       </div>
 
       {/* Renderiza o Modal de Edição sobrepondo a tela inteira */}
@@ -217,6 +248,7 @@ export default function PageClient() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         cliente={clienteSelecionado}
+        onSuccess={() => carregarDados()}
       />
     </div>
   );
