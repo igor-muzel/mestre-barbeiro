@@ -39,7 +39,7 @@ namespace backend.Controllers
 
                 }
 
-                return Ok(new {sucesso = true, message = "Cliente "+clienteAtualizado.Nome+" atualizado com sucesso!",dados = clienteAtualizado});
+                return Ok(new {sucesso = true, message = "Cliente "+clienteAtualizado.Name+" atualizado com sucesso!",dados = clienteAtualizado});
             }
             catch (Exception ex)
             {

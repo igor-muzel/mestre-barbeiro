@@ -107,7 +107,7 @@ namespace backend.Services
                 }
 
 
-                buscaCliente.Name = cliente.Nome;
+                buscaCliente.Name = cliente.Name;
                 buscaCliente.Telefone = cliente.Telefone;
 
                 await _context.SaveChangesAsync();
